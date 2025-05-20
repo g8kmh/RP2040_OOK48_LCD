@@ -43,13 +43,10 @@ Tx / Rx   Starts and stops the transmission of the currently selected Message.
 
 This code is designed to work with the Elecrow CrowPanel Pico-3.5 inch 480x320 TFT LCD HMI Module. https://www.aliexpress.com/item/1005007250778536.html 
 
-![IMG_20250128_153213](https://github.com/user-attachments/assets/226fca54-6678-45e9-b151-74a64b49ffde)
-
 Note:- similar HMI Panels are available using the ESP32 processor chip. Make sure that you are purchasing the RP2040 version. 
 
 A GPS module is also essential and must have a 1 Pulse per second output. This pulse is used to synchronise the start of each character. 
 
-![GPS](https://github.com/user-attachments/assets/53ceb650-0525-4138-a7ff-bff1f450c409)
 
 ## Connecting
 
