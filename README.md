@@ -146,8 +146,15 @@ The Sketch should compile and upload automatically to the Pico. If the upload fa
 
 ## Connections
 
-The receiver audio is connected using a simple CR network to GPIO Pins GND, 3V£ and 28 on the top edge of the HMI Module. 
+The receiver audio is connected using a simple CR network to GPIO Pins GND, 3V3 and 28 on the top edge of the HMI Module. 
 Details of this interface are in this file.  ![Interface](Documents/Schematic.pdf)
 
-The firmware requires the connection of a GPS module. This is used to accurately set the time and to generate the 1 Pulse per second signal used to synchromise the satrt of each character. Any GPS module with a 3V3 output and a 1PPS output can be used. It needs to output NMEA data at 9600 Baud or 38400 Baud. One of the low cost NEO6M modules was used for development. 
+IO Pin 7 is connected to to gate of an N channel Mosfet. The drain of this Mosfet is connected to the Key input of the radio.   
+
+The firmware requires the connection of a GPS module. This is used to accurately set the time and to generate the 1 Pulse per second signal used to synchromise the satrt of each character. Any GPS module with a 3V3 output and a 1PPS output can be used. It needs to output NMEA data at 9600 Baud or 38400 Baud. One of the low cost NEO6M modules was used for development.
+GPS data to the HMI module is connected to IO pin 5.
+GPS data from the HMI module is connected to IO pin 4.
+1 PPS pulse from the GPS module is conneced to IO pin 3.
+
+
 
