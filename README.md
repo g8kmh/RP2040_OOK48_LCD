@@ -51,9 +51,14 @@ Tx / Rx   Starts and stops the transmission of the currently selected Message.
 
 This code is designed to work with the Elecrow CrowPanel Pico-3.5 inch 480x320 TFT LCD HMI Module. https://www.aliexpress.com/item/1005007250778536.html 
 
+![hmi](https://github.com/user-attachments/assets/27250811-edb9-4df4-908e-7b8d27edb42c)
+
+
 Note:- similar HMI Panels are available using the ESP32 processor chip. Make sure that you are purchasing the RP2040 version. 
 
 A GPS module is also essential and must have a 1 Pulse per second output. This pulse is used to synchronise the start of each character. 
+
+![gps](https://github.com/user-attachments/assets/09e46324-8409-4898-bb8c-1557b216c92c)
 
 
 ## Connecting
@@ -159,7 +164,7 @@ Details of this interface are in this file.  ![Interface](Documents/Schematic.pd
 
 IO Pin 7 is connected to to gate of an N channel Mosfet. The drain of this Mosfet is connected to the Key input of the radio.   
 
-The firmware requires the connection of a GPS module. This is used to accurately set the time and to generate the 1 Pulse per second signal used to synchromise the satrt of each character. Any GPS module with a 3V3 output and a 1PPS output can be used. It needs to output NMEA data at 9600 Baud or 38400 Baud. One of the low cost NEO6M modules was used for development.
+The firmware requires the connection of a GPS module. This is used to accurately set the time and to generate the 1 Pulse per second signal used to synchromise the satrt of each character. Any GPS module with a 3V3 output and a 1PPS output can be used. It needs to output NMEA data at 9600 Baud or 38400 Baud. One of the G10A-F30 modules was used for development.
 GPS data to the HMI module is connected to IO pin 5.
 GPS data from the HMI module is connected to IO pin 4.
 1 PPS pulse from the GPS module is conneced to IO pin 3.
