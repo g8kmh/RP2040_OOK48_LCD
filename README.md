@@ -4,7 +4,7 @@
 
 This Project is an experimental test for a new Synchronous On Off Keying mode for use with weak signal microwave contacts.
 The protocol is based on an idea from Andy G4JNT with input from several other UK Microwave Group Members. 
-It is described in the document [Protocol](Documents/OOK48 Protocol.pdf).
+It is described in the document https://github.com/g4eml/RP2040_OOK48_LCD/blob/main/Documents/OOK48%20Protocol.pdf.
 
 ## Features
 
