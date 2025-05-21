@@ -2,9 +2,19 @@
 
 ## Description
 
-This Project is an experimental test for a new Synchronous On Off Keying mode for use with weak signal microwave contacts 
+This Project is an experimental test for a new Synchronous On Off Keying mode for use with weak signal microwave contacts.
+The protocol is based on an idea from Andy G4JNT with input from several other UK Microwave Group Members. 
+It is described in the document [Protocol](Documents/OOK48 Protocol.pdf).
 
 ## Features
+
+Uses On/Off keying which is easier to implement than Frequency Shift keying on the higher microwave bands. 
+
+The data rate is similar to Morse code, so the module can be connected directly to the CW key input of any radio. 
+
+Real time visual confirmation of the message, character by character. No need to wait 30 seconds to see if the reception has succeeded.
+
+Uses the GPS 1 Pulse per second signal for accurate character synchronisation. 
 
 Stand alone Device with LCD touch screen display. 
 
@@ -13,8 +23,6 @@ No special programming hardware or software required.
 Programming using the RP2040s built in standard boot loader. 
 
 10 Preset Messages are saved to EEPROM for automatic load on power on. 
-
-Requires a GPS 1 Pulse per second signal for accurate timing. 
 
 ## Operation Description
 
@@ -67,7 +75,7 @@ The power is provided by the USB-C connector marked 'USB' on the end of the HMI 
 
 3. Copy the .uf2 file onto the USB drive. The RP2040 will recognise the file and immediately update its firmware and reboot.
 
-## Building your own version of the firmware (longer method and not normally required)
+## Building your own version of the firmware (longer method and not normally required unless you need to make changes)
 
 The RP2040 is programmed using the Arduino IDE with the Earl F. Philhower, III  RP2040 core. 
 
