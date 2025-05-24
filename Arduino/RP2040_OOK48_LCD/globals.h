@@ -27,6 +27,7 @@ uint16_t cachePoint;                  // Pointer to next cache entry.
 char decoded;                         //decoded  Message character
 
 char gpsBuffer[256];                     //GPS data buffer
+uint16_t gpsBaud = 0;
 int gpsPointer;                          //GPS buffer pointer. 
 char gpsCh;
 bool gpsActive = false; 

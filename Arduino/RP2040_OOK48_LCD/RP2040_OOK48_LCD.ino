@@ -29,6 +29,7 @@ void setup()
     mode = RX;  
     RxInit();
     loadMsg();
+    loadBaud();
     TxMessNo = 0;
     TxInit();
     attachInterrupt(PPSINPUT,ppsISR,RISING);
@@ -67,7 +68,8 @@ void setup1()
 {
   Serial2.setRX(GPSRXPin);              //Configure the GPIO pins for the GPS module
   Serial2.setTX(GPSTXPin);
-  Serial2.begin(38400);                  //start GPS port comms
+  while(gpsBaud == 0);                  //wait for core 0 to read the EEPROM settings
+  Serial2.begin(gpsBaud);                                             
   gpsPointer = 0;
   waterRow = 0;
   initGUI();                        //initialise the GUI screen
@@ -193,11 +195,56 @@ void processNMEA(void)
 
 }
 
+void clearEEPROM(void)
+{
+  for(int i=0;i<1024;i++)
+   {
+    EEPROM.write(i,0);
+    EEPROM.commit();
+   }
+}
+
+void loadBaud(void)
+{
+  if(EEPROM.read(EEBAUDVALID) == 42)
+   {
+     EEPROM.get(EEBAUD,gpsBaud);
+   }
+  else 
+   {
+     if(autoBaud(9600))
+      {
+        gpsBaud = 9600;
+        saveBaud();
+      }
+    else 
+      {
+        gpsBaud = 38400;
+        saveBaud();
+      }
+   }
+}
+
+void clearBaud(void)
+{
+  EEPROM.put(EEBAUD,0);
+  EEPROM.write(EEBAUDVALID,0);
+  EEPROM.commit();
+}
+
+void saveBaud(void)
+{
+  EEPROM.put(EEBAUD,gpsBaud);
+  EEPROM.write(EEBAUDVALID,42);
+  EEPROM.commit();
+}
+
+
 void loadMsg(void)
 {
-  if(EEPROM.read(99) == 173)
+  if(EEPROM.read(EEMSGVALID) == 173)
    {
-     EEPROM.get(100,TxMessage);
+     EEPROM.get(EEMSG,TxMessage);
    }
   else 
    {
@@ -213,10 +260,35 @@ void clearMsg(void)
      }  
   }
 
-
 void saveMsg(void)
 {
-  EEPROM.put(100,TxMessage);
-  EEPROM.write(99,173);
+  EEPROM.put(EEMSG,TxMessage);
+  EEPROM.write(EEMSGVALID,173);
   EEPROM.commit();
+}
+
+bool autoBaud(int rate)
+{
+  long baudTimer;
+  char test[3];
+  bool gotit;
+
+  Serial2.begin(rate);                  //start GPS port comms
+  baudTimer = millis();                    //make a note of the time
+  gotit = false;
+  while((millis() < baudTimer+2000) & (gotit == false))       //try 38400 for two seconds
+    {
+      if(Serial2.available())
+       {
+         test[0] = test[1];             //shift the previous chars up one
+         test[1] = test[2];
+         test[2]=Serial2.read();        //get the next char
+         if((test[0] == 'R') & (test[1] == 'M') & (test[2] == 'C'))    //have we found the string 'RMC'?
+          {
+            gotit = true;
+          }
+       }
+    }     
+   Serial2.end();     
+   return gotit;
 }
