@@ -90,6 +90,7 @@ void drawMempad()
   {
     for (uint8_t row = 0; row < 5; row++) 
     {
+      char blank[2] = " ";
       uint8_t b = col *5 + row;
 
       tft.setFreeFont(MEMLABEL_FONT);
@@ -97,7 +98,7 @@ void drawMempad()
       MEMkey[b].initButton(&tft, MEMKEY_X + col * (MEMKEY_W + MEMKEY_SPACING_X),
                         MEMKEY_Y + row * (MEMKEY_H + MEMKEY_SPACING_Y), // x, y, w, h, outline, fill, text
                         MEMKEY_W, MEMKEY_H, TFT_WHITE, TFT_BLUE, TFT_WHITE,
-                        "", MEMKEY_TEXTSIZE);
+                        blank, MEMKEY_TEXTSIZE);
       MEMkey[b].drawButton(0,MEMkeyLabel[b]);
     }
   }
