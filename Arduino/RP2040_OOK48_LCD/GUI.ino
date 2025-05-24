@@ -8,8 +8,9 @@ void initGUI(void)
   if(screenTouched())
    {
     while(screenTouched());
-    delay(1000);
+    delay(500);
     touch_calibrate(1);
+    clearMsg();
    }
    else
    {
@@ -30,7 +31,7 @@ void homeScreen(void)
 //clear the spectrum and waterfall areas of the screen
 void clearSpectrum(void)
 {
-  tft.fillRect(SPECLEFT,SPECHEIGHT,SPECWIDTH, WATERHEIGHT,TFT_BLACK);   //Create Black background for the Waterfall
+  tft.fillRect(SPECLEFT,SPECHEIGHT,SPECWIDTH, WATERHEIGHT + LEGHEIGHT,TFT_BLACK);   //Create Black background for the Waterfall
   tft.fillRect(SPECLEFT,SPECTOP,SPECWIDTH,SPECHEIGHT,TFT_CYAN);   //Create background for the Spectrum Display
 }
 
@@ -133,9 +134,9 @@ void textPrintChar(char m, uint16_t col)
 void showTime(void)
 {
   char t[20];
-  if(PPSActive > 0)
+  if((PPSActive > 0) & (gpsSec != -1))
    {
-     sprintf(t,"   %02d:%02d:%02d    ",hours,minutes,seconds);
+     sprintf(t,"   %02d:%02d:%02d    ",gpsHr,gpsMin,gpsSec);
    }
   else 
   {

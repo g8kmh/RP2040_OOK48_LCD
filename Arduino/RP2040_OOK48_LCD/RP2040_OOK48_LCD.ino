@@ -31,7 +31,6 @@ void setup()
     loadMsg();
     TxMessNo = 0;
     TxInit();
-    loopTimer = millis() + 1000;
     attachInterrupt(PPSINPUT,ppsISR,RISING);
 }
 
@@ -96,26 +95,12 @@ void loop1()
   char m[64];
   unsigned long inc;
  
-  if(millis() >= loopTimer)
+    if((gpsSec != lastSec) | (millis() > lastTimeUpdate + 2000))
     {         
-      loopTimer = loopTimer + 1000;
-      seconds++;
-      if(seconds == 60)
-        {
-          minutes++;
-          seconds = 0;
-          if(minutes == 60)
-            {
-              hours++;
-              minutes = 0;
-              if(hours == 24)
-                {
-                  hours = 0;
-                }
-            }
-        } 
       showTime();                                   //display the time
       if(PPSActive >0) PPSActive--;                 //decrement the PPS active timeout. (rest by the next PPS pulse)
+      lastSec = gpsSec;
+      lastTimeUpdate = millis();
     }
 
 
@@ -161,17 +146,6 @@ void loop1()
     {
       processTouch();
     } 
-//synchronise the local clock to the GPS clock if available
-  int secErr = abs(seconds - gpsSec);
-  if((gpsSec != -1) && (gpsActive) && (secErr > 1) && (secErr < 58))
-         {
-          Serial.println("Adjusting Clock");
-          loopTimer = millis() + 1000;
-          seconds = gpsSec;
-          minutes = gpsMin;
-          hours = gpsHr;
-          gpsActive = false;
-         }
 
   if(Serial2.available() > 0)           //data received from GPS module
       {
@@ -227,12 +201,17 @@ void loadMsg(void)
    }
   else 
    {
+     clearMsg();
+   }
+}
+
+void clearMsg(void)
+  {
     for(int i=0;i<10;i++)
      {
       strcpy(TxMessage[i] , "Empty\r"); 
-     }
-   }
-}
+     }  
+  }
 
 
 void saveMsg(void)

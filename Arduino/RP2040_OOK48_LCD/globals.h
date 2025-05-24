@@ -26,19 +26,16 @@ uint16_t cachePoint;                  // Pointer to next cache entry.
 
 char decoded;                         //decoded  Message character
 
-unsigned long loopTimer;
-int seconds = 0;
-int minutes = 0;                          //local clock time
-int hours =0;
-
 char gpsBuffer[256];                     //GPS data buffer
 int gpsPointer;                          //GPS buffer pointer. 
 char gpsCh;
 bool gpsActive = false; 
+int lastSec = 0;
 int gpsSec = -1;                       //GPS clock time  -1 for GPS Invalid
 int gpsMin = -1;
 int gpsHr = -1;
 uint8_t PPSActive = 0;
+long lastTimeUpdate = 0;
 
 uint16_t buffer[2][NUMBEROFSAMPLES];     //2 DMA buffers to allow one to be processed while the next is being received.
 double vReal[NUMBEROFBINS];            //Real Array for FFT input and output
