@@ -68,8 +68,11 @@ void setup1()
 {
   Serial2.setRX(GPSRXPin);              //Configure the GPIO pins for the GPS module
   Serial2.setTX(GPSTXPin);
-  while(gpsBaud == 0);                  //wait for core 0 to read the EEPROM settings
-  Serial2.begin(gpsBaud);                                             
+  while(gpsBaud == 0)                   //wait for core zero to initialise the baud rate for GPS. 
+   {
+    delay(1);
+   }
+  Serial2.begin(gpsBaud);                        
   gpsPointer = 0;
   waterRow = 0;
   initGUI();                        //initialise the GUI screen
@@ -138,7 +141,7 @@ void loop1()
         textPrintChar(TxCharSent,TFT_RED);                               
         break;
         case ERROR:
-        textPrintChar('?',TFT_ORANGE);                                 
+        textPrintChar('~',TFT_ORANGE);                                 
         break;
       }
     }
