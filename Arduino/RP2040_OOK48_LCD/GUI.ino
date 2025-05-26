@@ -11,6 +11,10 @@ void initGUI(void)
     delay(500);
     touch_calibrate(1);
     clearMsg();
+    clearBaud();
+    Serial2.end();
+    loadBaud();
+    Serial2.begin(gpsBaud);
    }
    else
    {
@@ -201,9 +205,9 @@ void touch_calibrate(bool force)
   uint8_t calDataOK = 0;
 
   // check if calibration exists
-  if (EEPROM.read(0) == 0xAA) 
+  if (EEPROM.read(EECALVALID) == 0xAA) 
     {   
-      EEPROM.get(1,calData);
+      EEPROM.get(EECAL,calData);
       calDataOK = 1;
     }
 
@@ -238,8 +242,8 @@ void touch_calibrate(bool force)
     tft.println("Calibration complete!");
 
     // store data in the EEPROM
-    EEPROM.put(1,calData);
-    EEPROM.write(0,0xAA);
+    EEPROM.put(EECAL,calData);
+    EEPROM.write(EECALVALID,0xAA);
     EEPROM.commit();
   }
 
