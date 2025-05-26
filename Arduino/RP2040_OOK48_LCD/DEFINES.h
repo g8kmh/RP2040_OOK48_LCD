@@ -82,7 +82,8 @@
 //Detection Values
 
 #define SAMPLERATE 9216 * OVERSAMPLE  //9216 samples per second with 1024 bins gives 9Hz sample rate and 9Hz bins. 
-#define TONE 89                     //tone 89 * 9 = 801 Hz 
+#define TONE800 89                     //tone 89 * 9 = 801 Hz
+#define TONE1250 138                   //138*9 = 1242 (Centre of spectrumm screen)
 #define TONETOLERANCE 11            //Tone tolerance 11 * 9 = +- 99Hz 
 #define CACHESIZE 8                // 8 bits 
 #define HZPERBIN 9                   //Hertz per bin. Used to generate displayed spectrum. 

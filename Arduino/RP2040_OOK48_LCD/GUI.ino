@@ -339,6 +339,39 @@ bool screenTouched(void)
       return;
     }
 
+   if(touchZone(WATERLEFT, WATERTOP, WATERWIDTH, WATERHEIGHT)&& noTouch)
+    {
+      noTouch = false;
+      switch(toneTolerance)
+      {
+        case 5:
+        rxTone = TONE800;
+        toneTolerance = 11;
+        break;       
+        case 11:
+        rxTone = TONE800;
+        toneTolerance = 28;
+        break;
+        case 28:
+        rxTone = TONE800;
+        toneTolerance = 55;
+        break;
+        case 55:
+        rxTone = TONE1250;
+        toneTolerance = 105;
+        break;
+        case 105:
+        rxTone = TONE800;
+        toneTolerance = 5;
+        break;       
+      }
+      calcLegend();
+      drawLegend();
+      return;
+    }
+
+
+
  }
 
  bool touchZone(int x, int y, int w, int h) 
