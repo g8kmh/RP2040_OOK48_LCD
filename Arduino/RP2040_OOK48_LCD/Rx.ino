@@ -42,11 +42,11 @@ void RxTick(void)
           { 
            if(decodeCache())                                     //Try to extract the character
              {
-               rp2040.fifo.push(MESSAGE);                         //Successfull decode. Ask Core 1 to display it 
+               rp2040.fifo.push(MESSAGE);                         //Successful 1st decode. Ask Core 1 to display it 
              } 
             else 
              {
-                rp2040.fifo.push(ERROR);                         //Unsuccessfull decode. Ask Core 1 to display error char 
+                rp2040.fifo.push(ERROR);                         //Unsuccessful 1st decode. Ask Core 1 to display the possible char 
              } 
           }
         }                                  
@@ -85,6 +85,42 @@ bool decodeCache(void)
     }
   else 
     {
-        return 0;                         //invalid character
+      force4from8();                    //try to recover the best 4 from 8 character. 
+      return 0;                         //unreliable character
     }
+}
+
+//crude error correction. Picks the highest 4 Magnitudes and sets them to 1 creating a 4 from 8 character.
+void force4from8(void)
+{
+  uint8_t dec;
+  double largest;
+  uint8_t largestbits[4];
+  double temp[CACHESIZE];         //termporary array for finding the largest magnitudes
+
+  
+  memcpy(temp,toneCache,sizeof(temp));        //make a copy of the tone cache
+
+  //find the four largest magnitudes and save their bit positions.
+  for(int l= 0; l < 4; l++)
+    {
+      largest = 0;
+      for(int i = 0 ; i < CACHESIZE ; i++)
+      {
+        if(temp[i] > largest)
+        {
+        largest=temp[i];
+        largestbits[l]=i;
+        }
+      }
+      temp[largestbits[l]] = 0;
+    }
+
+  //convert the 4 bit positions to a valid 4 from 8 char
+    for(int l = 0;l<4;l++)
+    {
+      dec = dec | (0x80 >> largestbits[l]);        //add a one bit. 
+    }
+
+   decoded = decode4from8[dec];           //use the decode array to recover the original Character
 }

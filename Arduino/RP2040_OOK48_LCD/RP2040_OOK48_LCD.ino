@@ -141,7 +141,7 @@ void loop1()
         textPrintChar(TxCharSent,TFT_RED);                               
         break;
         case ERROR:
-        textPrintChar('~',TFT_ORANGE);                                 
+        textPrintChar(decoded,TFT_ORANGE);                                           
         break;
       }
     }
