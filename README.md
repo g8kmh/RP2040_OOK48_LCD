@@ -29,11 +29,11 @@ Programming using the RP2040s built in standard boot loader.
 ### Display
 The display is split into 4 main areas. On the left are the Spectrum display and Waterfall. These are used to tune the reciever to the correct frequency. 
 
-The Spectrum and Waterfall span from 300 Hz to 2200 Hz. Underneath the spectrum display there is an orange band which indicates the correct frequency for decoding (1 KHz) . The receiver needs to be tuned such that the received tone falls withing this orange band. 
+The Spectrum and Waterfall span from 300 Hz to 2200 Hz. Underneath the spectrum display there is an orange band which indicates the correct frequency for decoding (800 Hz) . The receiver needs to be tuned such that the received tone falls withing this orange band. 
 
 When a signal is being received the orange band will turn green to indicate a tone is being detected.
 
-Received messages will appear at one character per second on the right hand side of the display.
+Received messages will appear at one character per second on the right hand side of the display. Characters in Blue have the highest confidence factor but may still be in error. Characters in Orange have a lower confidence factor and the chance of an error is higher. 
 
 When Transmitting the Spectrum display is replaced with a RED box and the Text 'TX'. The transmitted message appears on the right hand side in red as it is sent. 
 
@@ -46,6 +46,12 @@ Clear Screen.   Clears the Message display.
 Set Tx Text.  This shows a menu of the 10 stored messages to be used for transmit. Selecting a messsage allows it to be edited on the next screen. Pressing the Enter Button saves the message.
 
 Tx / Rx   Starts and stops the transmission of the currently selected Message. 
+
+Touching the Waterfall display area of the screen will cycle through a selection of Tone detection ranges indicated by the width of the orange band. 
+Available ranges are +-50 Hz, +_ 100Hz, +-250Hz, +-500Hz and the full width 300-2200 Hz.
+Wider ranges require less accurate tuning but have a slightly higher chance of errors with weak signals. 
+
+A 'Factory Reset' can be done by holding your finger on the display while powering on. This will clear the EEPROM to its default values and run the screen calibration routine. 
 
 ## Hardware Requirements
 
@@ -72,7 +78,7 @@ The power is provided by the USB-C connector marked 'USB' on the end of the HMI 
 
 ## Programming or updating the HMI Module (quick method) 
 
-1. Locate the latest compiled firmware file 'RP2040_OOK48_LCD_9600.uf2' or 'RP2040_OOK48_LCD_38400.uf2' which will be found here https://github.com/g4eml/RP2040_OOK48_LCD/releases and save it to your desktop. The two files allow for two different default baud rates for the GPS module. 
+1. Locate the latest compiled firmware file 'RP2040_OOK48_LCD.uf2' which will be found here https://github.com/g4eml/RP2040_OOK48_LCD/releases and save it to your desktop. 
 
 2. Connect the HMI Module to your PC using the USB-C port on the side. 
 

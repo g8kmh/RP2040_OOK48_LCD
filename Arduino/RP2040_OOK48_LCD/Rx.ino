@@ -3,7 +3,7 @@
 void RxInit(void)
 {
   sampleRate = SAMPLERATE;                  //samples per second.
-  rxTone = TONE;                              //tone in bins. 
+  rxTone = TONE800;                              //tone in bins. 
   toneTolerance = TONETOLERANCE;            //Tone tolerance in bins. 
   cacheSize = CACHESIZE;                    // tone decode samples.
   hzPerBin = HZPERBIN;
