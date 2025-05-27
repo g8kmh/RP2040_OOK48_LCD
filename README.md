@@ -134,6 +134,8 @@ This will normaly be found at 'Documents/Arduino/libraries/TFT_eSPI'
 3. Select Tools and make the following settings.
 
    Board: "Raspberry Pi Pico"
+
+   Port: "UF2 Board"
    
    Debug Level: "None"
 
