@@ -11,6 +11,7 @@
 
 #define GPSTXPin 4                      //Serial data to GPS module 
 #define GPSRXPin 5                      //Serial data from GPS module
+#define TXPIN 6                         //Transmit output pin
 #define KEYPIN 7                        //Key Output Pin
 #define PPSINPUT 3                      //1 PPS signal from GPS 
 #define ADC_CHAN 2                      //ADC2 is on GPIO Pin 28. Analogue input from Receiver. DC biased to half Supply rail.

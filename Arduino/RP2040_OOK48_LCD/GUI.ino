@@ -289,6 +289,7 @@ bool screenTouched(void)
        {
          mode = TX;
          TxInit();
+         digitalWrite(TXPIN, 1);
          tft.setTextColor(TFT_BLUE);
          tft.fillRect(BUT6LEFT, BUT6TOP, BUT6WIDTH, BUT6HEIGHT, TFT_CYAN); 
          tft.drawRect(BUT6LEFT, BUT6TOP, BUT6WIDTH, BUT6HEIGHT, TFT_WHITE);
@@ -305,6 +306,7 @@ bool screenTouched(void)
        {
          mode = RX;
          digitalWrite(KEYPIN, 0);
+         digitalWrite(TXPIN, 0);
          cancel_repeating_timer(&TxIntervalTimer);
          tft.setTextColor(TFT_BLUE);
          tft.fillRect(BUT6LEFT, BUT6TOP, BUT6WIDTH, BUT6HEIGHT, TFT_CYAN); 

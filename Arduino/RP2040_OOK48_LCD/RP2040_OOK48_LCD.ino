@@ -26,6 +26,8 @@ void setup()
     pinMode(PPSINPUT,INPUT);
     pinMode(KEYPIN,OUTPUT);
     digitalWrite(KEYPIN,0);
+    pinMode(TXPIN,OUTPUT);
+    digitalWrite(TXPIN,0);
     mode = RX;  
     RxInit();
     loadMsg();
