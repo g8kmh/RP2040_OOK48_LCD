@@ -138,20 +138,24 @@ void textPrintChar(char m, uint16_t col)
 void showTime(void)
 {
   char t[20];
+  char v[10];
   if((PPSActive > 0) & (gpsSec != -1))
    {
-     sprintf(t,"   %02d:%02d:%02d    ",gpsHr,gpsMin,gpsSec);
+     sprintf(t,"   %02d:%02d:%02d      ",gpsHr,gpsMin,gpsSec);
    }
   else 
   {
      sprintf(t,"Waiting for GPS");
   }
   
-  tft.fillRect(0,0,130,20,TFT_CYAN);
+  sprintf(v,"%.2f V",float (batV)/BATCAL);
+
+  tft.fillRect(0,0,230,20,TFT_CYAN);
   tft.setTextColor(TFT_BLACK);
   tft.setFreeFont(&FreeSans9pt7b);
   tft.setTextDatum(TL_DATUM);
   tft.drawString(t,0,0);
+  tft.drawString(v,180,0);
 }
 
 
