@@ -24,6 +24,8 @@ double threshold;
 double toneCache[CACHESIZE];          // Array for tone magnitude cache
 uint16_t cachePoint;                  // Pointer to next cache entry.
 
+uint16_t batV;
+
 char decoded;                         //decoded  Message character
 
 char gpsBuffer[256];                     //GPS data buffer
