@@ -145,7 +145,7 @@ This will normaly be found at 'Documents/Arduino/libraries/TFT_eSPI'
 
    Flash Size: "2Mb (no FS)"
 
-   CPU Speed: "133MHz"
+   CPU Speed: "200MHz"
 
    IP/Bluetooth Stack: "IPV4 Only"
 
