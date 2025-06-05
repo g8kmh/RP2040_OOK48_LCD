@@ -38,7 +38,6 @@ void RxTick(void)
       if(cachePoint == cacheSize)                               //If the Cache is full (8 bits of data)
         {
           cachePoint =0;                                        //Reset ready for the next period
-          readBatVolts();                                           //read the battery voltage while the Signal ADC is not needed. 
           if(PPSActive)                                         //decodes are only valid if the PPS Pulse is present
           { 
            if(decodeCache())                                     //Try to extract the character

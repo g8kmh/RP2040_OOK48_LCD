@@ -36,7 +36,6 @@ void TxSymbol(void)
       cancel_repeating_timer(&TxIntervalTimer);
       TxCharSent = TxMessage[TxMessNo][TxPointer];
       TxSent = true;
-      readBatVolts();
     } 
     else 
     {
