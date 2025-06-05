@@ -39,23 +39,3 @@ void dma_init(void)
     adc_run(true);                                               //start the ADC Capture
 }
 
-void readBatVolts(void)
-{
-    dma_channel_set_irq0_enabled(dma_chan, false);                      //disable DMA interrupts
-    dma_channel_abort(dma_chan);                                        //stop the DMA
-    dma_hw->ints0 = 1u << dma_chan;                                     //clear any spurious IRQ 
-    dma_channel_cleanup(dma_chan);                                      //cleanup the DMA
-    dma_channel_unclaim(dma_chan);                                      //return the DMA channel
-    adc_run(false);                                                     //stop the ADC
-
-    adc_init();                                                   //reinitialise the ADC
-    adc_gpio_init(26 + ADC_VOLTS);                                //Assign GPIO Pin to ADC for BAttery Voltage                                                //initialise the ADC hardware
-    adc_select_input(ADC_VOLTS);                                  //select the Analogue input channel for battery voltage
-    adc_fifo_setup(false,false,1,false,false);                    //disable ADC FIFO.
-    adc_set_clkdiv(48000000/sampleRate);                         //Number of clock cycles between sample triggers. 0 = continuous. 48MHz clock. (minimumm allowed value = 98)
-    
-    batV=adc_read();                                               //perform a single read of the voltage
-
-    dma_init();                                                   //reinitialise Audio DMA mode
-    dma_handler();                                                //restart the transfers
-}

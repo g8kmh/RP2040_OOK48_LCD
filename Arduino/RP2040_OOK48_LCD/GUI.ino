@@ -147,15 +147,12 @@ void showTime(void)
   {
      sprintf(t,"Waiting for GPS");
   }
-  
-  sprintf(v,"%.2f V",float (batV)/BATCAL);
 
   tft.fillRect(0,0,230,20,TFT_CYAN);
   tft.setTextColor(TFT_BLACK);
   tft.setFreeFont(&FreeSans9pt7b);
   tft.setTextDatum(TL_DATUM);
   tft.drawString(t,0,0);
-  tft.drawString(v,180,0);
 }
 
 

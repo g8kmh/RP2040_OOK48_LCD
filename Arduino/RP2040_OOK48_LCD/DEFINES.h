@@ -17,8 +17,6 @@
 #define ADC_CHAN 2                      //ADC2 is on GPIO Pin 28. Analogue input from Receiver. DC biased to half Supply rail.
 #define ADC_VOLTS 3                     //ADC 3 is battery voltage/2
 
-#define BATCAL 590.0                    //calibration factor for battery voltage
-
 #define REPEAT_CAL false              // Set REPEAT_CAL to true instead of false to run calibration again, otherwise it will only be done once.
 #define PLOTPOINTS 234                //Number of FFT points to display
 #define SPECLOW 300.00                //spectrum display low frequency
