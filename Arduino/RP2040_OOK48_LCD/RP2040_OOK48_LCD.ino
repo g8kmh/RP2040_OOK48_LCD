@@ -11,6 +11,7 @@
 #include <TFT_eSPI.h>                 // Hardware-specific library. Must be pre-configured for this display and touchscreen
 #include "DEFINES.h"                  //include the defines for this project
 #include "globals.h"                  //global variables
+#include "float.h"
 
 TFT_eSPI tft = TFT_eSPI();            // Invoke custom library
  

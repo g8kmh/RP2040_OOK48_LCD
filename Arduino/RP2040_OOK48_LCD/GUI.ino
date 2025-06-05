@@ -361,7 +361,7 @@ bool screenTouched(void)
         break;
         case 55:
         rxTone = TONE1250;
-        toneTolerance = 105;
+        toneTolerance = MAXTONETOLERANCE;
         break;
         case 105:
         rxTone = TONE800;

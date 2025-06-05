@@ -90,6 +90,7 @@
 #define HZPERBIN 9                   //Hertz per bin. Used to generate displayed spectrum. 
 #define SNBINS 277.00                //number of bins for 2.5Khz noise bandwidth
 
+#define MAXTONETOLERANCE 105
 //Tx constants
 
 #define TXINTERVAL 111111           //9 symbols per second in microseconds

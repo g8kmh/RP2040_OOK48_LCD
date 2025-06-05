@@ -119,3 +119,12 @@ double toneDetect(void)
   
   return toneMag;
 }
+
+void saveCache(void)
+{
+  for(int i = 0 ; i < (1+toneTolerance *2) ; i++ )
+  {
+    int bin = rxTone - toneTolerance + i;
+     toneCache[i][cachePoint]= vReal[bin];
+  }
+}
