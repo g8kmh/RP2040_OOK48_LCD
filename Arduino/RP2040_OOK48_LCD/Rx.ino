@@ -25,8 +25,8 @@ void RxTick(void)
       rp2040.fifo.push(GENPLOT);                                //Ask Core 1 to generate data for the Displays from the FFT results.  
       rp2040.fifo.push(DRAWSPECTRUM);                           //Ask core 1 to draw the Spectrum Display
       rp2040.fifo.push(DRAWWATERFALL);                          //Ask core 1 to draw the Waterfall Display      
-      toneCache[cachePoint] = toneDetect();                     //Add the Tone magnitude to the tone cache. 
-      if(toneCache[cachePoint++] > threshold)
+      saveCache();                                              //save the FFT magnitudes to the cache.
+      if(toneCache[bestBin][cachePoint++] > threshold)
        {
          rp2040.fifo.push(SHOWTONE1);     //Ask Core 1 to highlight the Tone Green. 
        }
@@ -40,7 +40,8 @@ void RxTick(void)
           cachePoint =0;                                        //Reset ready for the next period
           if(PPSActive)                                         //decodes are only valid if the PPS Pulse is present
           { 
-           if(decodeCache())                                     //Try to extract the character
+           bestBin = findBestBin();                             //search the cached bins to find the bin containing the tone. 
+           if(decodeCache(bestBin))                              //Try to extract the character
              {
                rp2040.fifo.push(MESSAGE);                         //Successful 1st decode. Ask Core 1 to display it 
              } 
@@ -54,15 +55,47 @@ void RxTick(void)
     }
 }
 
+//search the FFT cache to find the bin containing the tone. Use the bin with the greatest max to min range 
+int findBestBin(void)
+{
+  double max;
+  double min;
+  double range;
+  double bestRange;
+  int topBin;
+
+  bestRange =0;
+  topBin = 0;
+  for(int b=0 ; b < 1 + toneTolerance *2; b++)        //search each possible bin in the search range
+    {
+      max = 0 - DBL_MAX;
+      min = DBL_MAX;
+      for(int s=0; s < cacheSize ; s++)               //search all 8 symbols in this bin to find the largest and smallest
+        {
+          if(toneCache[b][s] > max) max = toneCache[b][s];
+          if(toneCache[b][s] < min) min = toneCache[b][s];
+        }
+      range = max - min;                //calculate the signal to noise for this bin
+      if(range > bestRange)             //if this bin is a better choice than previous (larger signal to noise)
+        {
+          bestRange = range;            //make it the chosen one. 
+          topBin = b;
+        }
+
+    }
+  return topBin;
+}
+
+
 //Search the Tone Cache to try to decode the character. 
-bool decodeCache(void)
+bool decodeCache(int bin)
 {
 
 //calculate the threshold as the mean of the received tone magnitudes. 
   threshold=0;
   for(int i = 0; i < cacheSize ; i++)
     {
-      threshold=threshold + toneCache[i];
+      threshold=threshold + toneCache[bin][i];
     }
   threshold = threshold / cacheSize;
 
@@ -70,7 +103,7 @@ bool decodeCache(void)
   uint8_t dec = 0;
   for(int i = 0; i < cacheSize; i++)
     {
-      if(toneCache[i] > threshold) 
+      if(toneCache[bin][i] > threshold) 
         {
           dec = dec | (0x80 >> i);        //add a one bit if detected. 
         }
@@ -85,13 +118,13 @@ bool decodeCache(void)
     }
   else 
     {
-      force4from8();                    //try to recover the best 4 from 8 character. 
+      force4from8(bin);                    //try to recover the best 4 from 8 character. 
       return 0;                         //unreliable character
     }
 }
 
 //crude error correction. Picks the highest 4 Magnitudes and sets them to 1 creating a 4 from 8 character.
-void force4from8(void)
+void force4from8(int bin)
 {
   uint8_t dec;
   double largest;
@@ -99,7 +132,7 @@ void force4from8(void)
   double temp[CACHESIZE];         //termporary array for finding the largest magnitudes
 
   
-  memcpy(temp,toneCache,sizeof(temp));        //make a copy of the tone cache
+  memcpy(temp,toneCache[bin],sizeof(temp));        //make a copy of the tone cache
 
   //find the four largest magnitudes and save their bit positions.
   for(int l= 0; l < 4; l++)
