@@ -21,9 +21,11 @@ int overlap = 1;
 float sigNoise;
 float snBins;
 double threshold;
-double toneCache[1 + MAXTONETOLERANCE * 2][CACHESIZE];          // Array large enough for the biggest tone magnitude cache
+double toneCache[1 + MAXTONETOLERANCE * 2][CACHESIZE *2];          // Array large enough for the biggest tone magnitude cache
 uint16_t cachePoint;                  // Pointer to next cache entry.
 int bestBin;
+
+bool halfRate = false;
 
 char decoded;                         //decoded  Message character
 

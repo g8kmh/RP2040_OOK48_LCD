@@ -184,9 +184,7 @@ void drawButtons(void)
   tft.drawRect(BUT3LEFT, BUT3TOP, BUT3WIDTH, BUT3HEIGHT, TFT_WHITE);
   tft.drawString("",BUT3LEFT +10,BUT3TOP +15);
 
-  tft.fillRect(BUT4LEFT, BUT4TOP, BUT4WIDTH, BUT4HEIGHT, TFT_CYAN);
-  tft.drawRect(BUT4LEFT, BUT4TOP, BUT4WIDTH, BUT4HEIGHT, TFT_WHITE);
-  tft.drawString("",BUT4LEFT +10,BUT4TOP +15);
+  drawBut4();
 
   tft.fillRect(BUT5LEFT, BUT5TOP, BUT5WIDTH, BUT5HEIGHT, TFT_CYAN);
   tft.drawRect(BUT5LEFT, BUT5TOP, BUT5WIDTH, BUT5HEIGHT, TFT_WHITE);
@@ -198,6 +196,28 @@ void drawButtons(void)
   tft.drawRect(BUT6LEFT, BUT6TOP, BUT6WIDTH, BUT6HEIGHT, TFT_WHITE);
   tft.setFreeFont(&FreeSans18pt7b);
   tft.drawString("Tx",BUT6LEFT +10,BUT6TOP +5);
+}
+
+void drawBut4(void)
+{
+  tft.fillRect(BUT4LEFT, BUT4TOP, BUT4WIDTH, BUT4HEIGHT, TFT_BLACK);
+  tft.drawRect(BUT4LEFT, BUT4TOP, BUT4WIDTH, BUT4HEIGHT, TFT_WHITE);
+  if(halfRate)
+   {
+     tft.setTextColor(TFT_WHITE);
+     tft.drawString("1S",BUT4LEFT +27,BUT4TOP +3);
+     tft.setTextColor(TFT_GREEN);   
+     tft.drawString("-> 2S",BUT4LEFT +5,BUT4TOP +23);
+   }
+  else 
+   {
+     tft.setTextColor(TFT_GREEN);
+     tft.drawString("-> 1S",BUT4LEFT +5,BUT4TOP +3);
+     tft.setTextColor(TFT_WHITE);   
+     tft.drawString("2S",BUT4LEFT +27,BUT4TOP +23); 
+   }
+
+  tft.setTextColor(TFT_BLUE);
 }
 
 void touch_calibrate(bool force)
@@ -271,6 +291,23 @@ bool screenTouched(void)
     {
       noTouch = false;
       textClear();
+      return;
+    }
+
+
+   if(touchZone(BUT4LEFT, BUT4TOP, BUT4WIDTH, BUT4HEIGHT) && noTouch)
+    {
+      noTouch = false;
+      halfRate = !halfRate;
+      if(halfRate) 
+       {
+        cacheSize = 16;
+       }
+      else 
+       {
+        cacheSize = 8;  
+       }
+      drawBut4();
       return;
     }
 
