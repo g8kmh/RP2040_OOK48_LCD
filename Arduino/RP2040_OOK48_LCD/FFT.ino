@@ -65,7 +65,7 @@ void generatePlotData(void)
  
 }
 
-
+/*
 
 //Search the averaged FFT Bins for the given tone. Return the maximum Magnitude found, its associated bin number and its s/n relative to the adjacent bins.
 void findMax(double * maxval, double * sn, double * mean)
@@ -119,6 +119,8 @@ double toneDetect(void)
   
   return toneMag;
 }
+
+*/ 
 
 void saveCache(void)
 {

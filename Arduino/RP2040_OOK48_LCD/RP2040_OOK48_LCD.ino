@@ -55,7 +55,7 @@ void ppsISR(void)
       dma_stop();
       dma_handler();        //call dma handler to reset the DMA timing and restart the transfers
       dmaReady = 0;
-      cachePoint =0;        //Reset ready for the first symbol
+      if((halfRate == false ) || (halfRate & (gpsSec & 0x01) )) cachePoint =0;        //Reset ready for the first symbol
     } 
   else 
     {

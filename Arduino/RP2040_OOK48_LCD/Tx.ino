@@ -35,7 +35,7 @@ void TxSymbol(void)
       Key = 0;
       cancel_repeating_timer(&TxIntervalTimer);
       TxCharSent = TxMessage[TxMessNo][TxPointer];
-      TxSent = true;
+      if((halfRate == false ) || (halfRate & (gpsSec & 0x01) )) TxSent = true;
     } 
     else 
     {
@@ -45,7 +45,7 @@ void TxSymbol(void)
     if (TxBitPointer > 8) 
     {
       TxBitPointer = 0;
-      TxPointer++;
+      if((halfRate == false ) || (halfRate & (gpsSec & 0x01) )) TxPointer++;        //repeat the character if half Rate and the second is even
     }
   }
 }

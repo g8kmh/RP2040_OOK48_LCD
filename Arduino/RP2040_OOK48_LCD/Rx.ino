@@ -70,7 +70,7 @@ int findBestBin(void)
     {
       max = 0 - DBL_MAX;
       min = DBL_MAX;
-      for(int s=0; s < cacheSize ; s++)               //search all 8 symbols in this bin to find the largest and smallest
+      for(int s=0; s < cacheSize ; s++)               //search all 8 or 16 symbols in this bin to find the largest and smallest
         {
           if(toneCache[b][s] > max) max = toneCache[b][s];
           if(toneCache[b][s] < min) min = toneCache[b][s];
@@ -90,18 +90,25 @@ int findBestBin(void)
 //Search the Tone Cache to try to decode the character. 
 bool decodeCache(int bin)
 {
+  if(halfRate)                        //half rate decoding. Sum the two received chars into one. 
+   {
+    for(int i=0; i<CACHESIZE ; i++)
+      {
+        toneCache[bin][i] = toneCache[bin][i] + toneCache[bin][i+8];
+      }
+   }
 
 //calculate the threshold as the mean of the received tone magnitudes. 
   threshold=0;
-  for(int i = 0; i < cacheSize ; i++)
+  for(int i = 0; i < CACHESIZE ; i++)
     {
       threshold=threshold + toneCache[bin][i];
     }
-  threshold = threshold / cacheSize;
+  threshold = threshold / CACHESIZE;
 
 // now take each received symbol and determine if it is a 1 or a zero
   uint8_t dec = 0;
-  for(int i = 0; i < cacheSize; i++)
+  for(int i = 0; i < CACHESIZE; i++)
     {
       if(toneCache[bin][i] > threshold) 
         {
@@ -129,7 +136,7 @@ void force4from8(int bin)
   uint8_t dec;
   double largest;
   uint8_t largestbits[4];
-  double temp[CACHESIZE];         //termporary array for finding the largest magnitudes
+  double temp[CACHESIZE];         //temporary array for finding the largest magnitudes
 
   
   memcpy(temp,toneCache[bin],sizeof(temp));        //make a copy of the tone cache
