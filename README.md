@@ -39,9 +39,11 @@ When Transmitting the Spectrum display is replaced with a RED box and the Text '
 
 ### Controls
 
-At the bottom of the screen there are 6 touch buttons. Only 3 of these are currently in use. 
+At the bottom of the screen there are 6 touch buttons. Only 4 of these are currently in use. 
 
 Clear Screen.   Clears the Message display.
+
+1S 2S.     Select the normal 1 second per character mode or the optional 2 seconds per character.  In the 2 second mode each character is sent twice and the two received versions are combined giving a slight improvement in low signal sensitivity as the expense of slowing down the character rate.  
 
 Set Tx Text.  This shows a menu of the 10 stored messages to be used for transmit. Selecting a messsage allows it to be edited on the next screen. Pressing the Enter Button saves the message.
 
@@ -170,6 +172,7 @@ The Sketch should compile and upload automatically to the Pico. If the upload fa
 The receiver audio is connected using a simple CR network to GPIO Pins GND, 3V3 and 28 on the top edge of the HMI Module. 
 Details of this interface are in this file.  ![Interface](Documents/Schematic.pdf)
 
+IO Pin 6 is connected to to gate of an N channel Mosfet. The drain of this Mosfet is connected to the PTT input of the radio.
 IO Pin 7 is connected to to gate of an N channel Mosfet. The drain of this Mosfet is connected to the Key input of the radio.   
 
 The firmware requires the connection of a GPS module. This is used to accurately set the time and to generate the 1 Pulse per second signal used to synchromise the satrt of each character. Any GPS module with a 3V3 output and a 1PPS output can be used. It needs to output NMEA data at 9600 Baud or 38400 Baud. One of the G10A-F30 modules was used for development.
