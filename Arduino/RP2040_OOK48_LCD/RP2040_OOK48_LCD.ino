@@ -12,12 +12,16 @@
 #include "DEFINES.h"                  //include the defines for this project
 #include "globals.h"                  //global variables
 #include "float.h"
+#include <TinyGPS++.h>
 
 TFT_eSPI tft = TFT_eSPI();            // Invoke custom library
+TinyGPSPlus gps;
  
 ArduinoFFT<double> FFT = ArduinoFFT<double>(vReal, vImag, NUMBEROFBINS, SAMPLERATE);         //Declare FFT function
 
 struct repeating_timer TxIntervalTimer;                   //repeating timer for Tx bit interval
+
+
 
 //Run once on power up. Core 0 does the time critical work. Core 1 handles the GUI.  
 void setup() 
@@ -49,13 +53,21 @@ bool TxIntervalInterrupt(struct repeating_timer *t)
 //interrupt routine for 1 Pulse per second input
 void ppsISR(void)
 {
-  PPSActive = 5;              //reset 5 second timeout for PPS signal
+  PPSActive = 3;              //reset 3 (was 5) second timeout for PPS signal
+
   if(mode == RX)
     {
       dma_stop();
       dma_handler();        //call dma handler to reset the DMA timing and restart the transfers
       dmaReady = 0;
-      if((halfRate == false ) || (halfRate & (gpsSec & 0x01) )) cachePoint =0;        //Reset ready for the first symbol
+      if((halfRate == false ) || (halfRate & (gpsSec & 0x01) )) {
+        cachePoint = 0;
+      }
+      else
+      {
+        cachePoint = 8;
+      }
+             //Reset ready for the first symbol
     } 
   else 
     {
@@ -71,11 +83,14 @@ void setup1()
 {
   Serial2.setRX(GPSRXPin);              //Configure the GPIO pins for the GPS module
   Serial2.setTX(GPSTXPin);
+
   while(gpsBaud == 0)                   //wait for core zero to initialise the baud rate for GPS. 
    {
     delay(1);
    }
-  Serial2.begin(gpsBaud);                        
+  Serial2.begin(gpsBaud);    
+
+
   gpsPointer = 0;
   waterRow = 0;
   initGUI();                        //initialise the GUI screen
@@ -157,22 +172,76 @@ void loop1()
 
   if(Serial2.available() > 0)           //data received from GPS module
       {
-        while(Serial2.available() >0)
-          {
-            gpsCh=Serial2.read();
-            if(gpsCh > 31) gpsBuffer[gpsPointer++] = gpsCh;
-            if((gpsCh == 13) || (gpsPointer > 255))
-              {
-                gpsBuffer[gpsPointer] = 0;
-                processNMEA();
-                gpsPointer = 0;
-              }
-          }
+      while (Serial2.available()) {
+      uint8_t gpsn = Serial2.read();
 
+      if (gps.encode(gpsn)) {
+        gpsActive=true;
+        if (gps.time.isUpdated()) {
+          gpsSec = gps.time.second();
+          gpsMin = gps.time.minute();
+          gpsHr = gps.time.hour();
+        }
+        if (mode == RX){ 
+            if (gps.location.isUpdated()){ // don't update in TX 
+              lon = gps.location.lng();
+              lat = gps.location.lat();
+
+              // convert longitude to Maidenhead
+
+              d = 180.0 + lon;
+              d = 0.5 * d;
+              int ii = (int)(0.1 * d);
+              qthLocator[0] = char(ii + 65);
+              float rj = d - 10.0 * (float)ii;
+              int j = (int)rj;
+              qthLocator[2] = char(j + 48);
+              float fpd = rj - (float)j;
+              float rk = 24.0 * fpd;
+              int k = (int)rk;
+              qthLocator[4] = char(k + 65);
+              fpd = rk - (float)(k);
+              float rl = 10.0 * fpd;
+              int l = (int)(rl);
+              qthLocator[6] = char(l + 48);
+              fpd = rl - (float)(l);
+              float rm = 24.0 * fpd;
+              int mm = (int)(rm);
+              qthLocator[8] = char(mm + 65);
+              //  convert latitude to Maidenhead
+              d = 90.0 + lat;
+              ii = (int)(0.1 * d);
+              qthLocator[1] = char(ii + 65);
+              rj = d - 10. * (float)ii;
+              j = (int)rj;
+              qthLocator[3] = char(j + 48);
+              fpd = rj - (float)j;
+              rk = 24.0 * fpd;
+              k = (int)rk;
+              qthLocator[5] = char(k + 65);
+              fpd = rk - (float)(k);
+              rl = 10.0 * fpd;
+              l = int(rl);
+              qthLocator[7] = char(l + 48);
+              fpd = rl - (float)(l);
+              rm = 24.0 * fpd;
+              mm = (int)(rm);
+              qthLocator[9] = char(mm + 65);
+              qthLocator[locatorLength] = '\0'; // Shorten Locator string
+//              Serial.println(qthLocator);
+             
+            }
+          } 
       }
-}
+    else
+      gpsActive = false;
+      }
+  } // while date available
+
+}      
 
 
+/***********************
 void processNMEA(void)
 {
   float gpsTime;
@@ -197,9 +266,10 @@ void processNMEA(void)
        gpsHr = -1;
      }
   }
-
-
 }
+***********************************************************************/
+
+
 
 void clearEEPROM(void)
 {
@@ -223,11 +293,17 @@ void loadBaud(void)
         gpsBaud = 9600;
         saveBaud();
       }
-    else 
+    else if(autoBaud(38400))
       {
-        gpsBaud = 38400;
+        gpsBaud = 9600;
+        saveBaud();
+      } 
+      else if(autoBaud(57600))
+      {
+        gpsBaud = 57600;
         saveBaud();
       }
+      else Serial.println("No baud rate");
    }
 }
 
@@ -297,4 +373,49 @@ bool autoBaud(int rate)
     }     
    Serial2.end();     
    return gotit;
+}
+char * replace(
+    char const * const original, 
+    char const * const pattern, 
+    char const * const replacement
+) {
+  size_t const replen = strlen(replacement);
+  size_t const patlen = strlen(pattern);
+  size_t const orilen = strlen(original);
+
+  size_t patcnt = 0;
+  const char * oriptr;
+  const char * patloc;
+
+  // find how many times the pattern occurs in the original string
+  for (oriptr = original; patloc = strstr(oriptr, pattern); oriptr = patloc + patlen)
+  {
+    patcnt++;
+  }
+
+  {
+    // allocate memory for the new string
+    size_t const retlen = orilen + patcnt * (replen - patlen);
+    char * const returned = (char *) malloc( sizeof(char) * (retlen + 1) );
+
+    if (returned != NULL)
+    {
+      // copy the original string, 
+      // replacing all the instances of the pattern
+      char * retptr = returned;
+      for (oriptr = original; patloc = strstr(oriptr, pattern); oriptr = patloc + patlen)
+      {
+        size_t const skplen = patloc - oriptr;
+        // copy the section until the occurence of the pattern
+        strncpy(retptr, oriptr, skplen);
+        retptr += skplen;
+        // copy the replacement 
+        strncpy(retptr, replacement, replen);
+        retptr += replen;
+      }
+      // copy the rest of the string.
+      strcpy(retptr, oriptr);
+    }
+    return returned;
+  }
 }

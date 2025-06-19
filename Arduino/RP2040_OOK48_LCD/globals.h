@@ -20,7 +20,7 @@ int overlap = 1;
 
 float sigNoise;
 float snBins;
-double threshold;
+double threshold,d;
 double toneCache[1 + MAXTONETOLERANCE * 2][CACHESIZE *2];          // Array large enough for the biggest tone magnitude cache
 uint16_t cachePoint;                  // Pointer to next cache entry.
 int bestBin;
@@ -34,12 +34,18 @@ uint16_t gpsBaud = 0;
 int gpsPointer;                          //GPS buffer pointer. 
 char gpsCh;
 bool gpsActive = false; 
+
 int lastSec = 0;
 int gpsSec = -1;                       //GPS clock time  -1 for GPS Invalid
 int gpsMin = -1;
 int gpsHr = -1;
 uint8_t PPSActive = 0;
 long lastTimeUpdate = 0;
+float lat, lon, cd;
+char qthLocator[12] = "--------";
+const char* const LOCTOKEN = "\x86";
+uint8_t locatorLength = 8; //Default QTH Locator
+
 
 uint16_t buffer[2][NUMBEROFSAMPLES];     //2 DMA buffers to allow one to be processed while the next is being received.
 double vReal[NUMBEROFBINS];            //Real Array for FFT input and output
@@ -56,6 +62,7 @@ bool noTouch = true;
 int TxPointer = 0;
 uint8_t TxBitPointer = 0;
 uint8_t TxBuffer[32];
+char VisualTxMessage[32];
 char TxMessage[10][32];
 uint8_t TxMessNo;
 uint8_t TxMessLen;

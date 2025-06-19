@@ -96,3 +96,15 @@
 #define TXINTERVAL 111111           //9 symbols per second in microseconds
 
 
+// Setup/config selection start position, key sizes and spacing
+#define CFG_X 0
+#define CFG_WIDTH 480
+#define CFG_HEIGHT 320
+#define CFG_LINESPACING 20
+#define CFG_TEXTLEFT 10
+#define CFG_BUTTONSLEFT CFG_WIDTH/2
+#define CFG_W 72 // Width and height
+#define CFG_H 33
+#define CFG_SPACING_X 10 // X and Y gap
+#define CFG_SPACING_Y 20
+#define CFG_TEXTSIZE 1   // Font size multiplier

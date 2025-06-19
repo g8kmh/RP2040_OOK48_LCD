@@ -13,6 +13,7 @@
 #define MEMLABEL_FONT &FreeSans9pt7b    // Button label font
 
 
+
 // Create 10 keys for the keypad
 char MEMkeyLabel[10][30];
 
@@ -27,10 +28,15 @@ int doMemPad(void)
 
   // Draw pad background
   tft.fillRect(MEM_X, 0, MEM_WIDTH, MEM_HEIGHT, TFT_DARKGREY);
+    
 
   for(int i = 0;i<10;i++)
   {
+ 
     strncpy(s,TxMessage[i],30);
+    char * const newstr = replace(s, LOCTOKEN, "{LOC}");  
+    if (newstr)
+          strncpy(s,newstr,30);
     if(strlen(s)>20)
       {
         s[19]=' ';

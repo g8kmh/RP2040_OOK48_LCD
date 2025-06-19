@@ -1,5 +1,4 @@
 //This file contains the functions for the Graphical User Interface
-
 void initGUI(void)
 {
   tft.init();                       //initialise the TFT display hardware
@@ -137,13 +136,13 @@ void textPrintChar(char m, uint16_t col)
 
 void showTime(void)
 {
-  char t[20];
+  char t[22];
   char v[10];
   if((PPSActive > 0) & (gpsSec != -1))
    {
-     sprintf(t,"   %02d:%02d:%02d      ",gpsHr,gpsMin,gpsSec);
+     sprintf(t," %02d:%02d:%02d   %10s",gpsHr,gpsMin,gpsSec, qthLocator);
    }
-  else 
+   else 
   {
      sprintf(t,"Waiting for GPS");
   }
@@ -178,13 +177,17 @@ void drawButtons(void)
 
   tft.fillRect(BUT2LEFT, BUT2TOP, BUT2WIDTH, BUT2HEIGHT, TFT_CYAN);
   tft.drawRect(BUT2LEFT, BUT2TOP, BUT2WIDTH, BUT2HEIGHT, TFT_WHITE);
-  tft.drawString("",BUT2LEFT +10,BUT2TOP +15);
+  tft.drawString("Config",BUT2LEFT + 5,BUT2TOP +15);
 
   tft.fillRect(BUT3LEFT, BUT3TOP, BUT3WIDTH, BUT3HEIGHT, TFT_CYAN);
   tft.drawRect(BUT3LEFT, BUT3TOP, BUT3WIDTH, BUT3HEIGHT, TFT_WHITE);
   tft.drawString("",BUT3LEFT +10,BUT3TOP +15);
 
-  drawBut4();
+  //drawBut4(); 
+  tft.fillRect(BUT4LEFT, BUT4TOP, BUT4WIDTH, BUT4HEIGHT, TFT_CYAN);
+  tft.drawRect(BUT4LEFT, BUT4TOP, BUT4WIDTH, BUT4HEIGHT, TFT_WHITE);
+  tft.drawString("",BUT4LEFT +10,BUT4TOP +15);
+
 
   tft.fillRect(BUT5LEFT, BUT5TOP, BUT5WIDTH, BUT5HEIGHT, TFT_CYAN);
   tft.drawRect(BUT5LEFT, BUT5TOP, BUT5WIDTH, BUT5HEIGHT, TFT_WHITE);
@@ -197,7 +200,7 @@ void drawButtons(void)
   tft.setFreeFont(&FreeSans18pt7b);
   tft.drawString("Tx",BUT6LEFT +10,BUT6TOP +5);
 }
-
+/***************************NOW IN CONFIG              
 void drawBut4(void)
 {
   tft.fillRect(BUT4LEFT, BUT4TOP, BUT4WIDTH, BUT4HEIGHT, TFT_BLACK);
@@ -219,7 +222,7 @@ void drawBut4(void)
 
   tft.setTextColor(TFT_BLUE);
 }
-
+*******************************************************************/
 void touch_calibrate(bool force)
 {
   uint16_t calData[5];
@@ -293,8 +296,15 @@ bool screenTouched(void)
       textClear();
       return;
     }
+   if(touchZone(BUT2LEFT, BUT2TOP, BUT2WIDTH, BUT2HEIGHT) && noTouch && mode==RX)
+    {
+      noTouch = false;
+      configMain();
+      homeScreen();
+      return;
+    }
 
-
+/**************************************************IN CONFIG ****
    if(touchZone(BUT4LEFT, BUT4TOP, BUT4WIDTH, BUT4HEIGHT) && noTouch)
     {
       noTouch = false;
@@ -310,7 +320,7 @@ bool screenTouched(void)
       drawBut4();
       return;
     }
-
+*********************************************************************/
    if(touchZone(BUT5LEFT, BUT5TOP, BUT5WIDTH, BUT5HEIGHT) && noTouch && mode == RX)
     {
       TxMessNo = doMemPad();
